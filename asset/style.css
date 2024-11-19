@@ -1,0 +1,271 @@
+        /* Assurer que html et body prennent toute la hauteur de la fenêtre */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* Faire en sorte que la carte prenne 100% de la hauteur */
+        #map {
+            height: 100%;
+        }
+
+        /* Style pour le bouton 
+        #add {
+            position: absolute;
+            top: 20px;  
+            left: 40px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8); 
+            border: 2px solid #007BFF;  
+            color: #007BFF;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        */
+        /* Style au survol du bouton 
+        #add:hover {
+            background-color: #007BFF;
+            color: white;
+        }
+*/
+        /* Le fond de la modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Contenu de la modal */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 60%;
+        }
+
+        /* Le bouton de fermeture */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Style du formulaire */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+       #myModal input[type="text"]{
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #validation {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #validation:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        #suggestions {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        #suggestions li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        #suggestions li:hover {
+            background-color: #eee;
+        }
+
+/* Styliser le bouton hamburger */
+#toggleSidebar {
+    position: absolute;
+    top: 20px;  /* Décalage depuis le haut */
+    left: 40px; /* Décalage depuis la gauche */
+    font-size: 30px;  /* Taille du symbole */
+    background-color: transparent;  /* Fond transparent */
+    border: none;  /* Pas de bordure */
+    color: #000;  /* Couleur bleue pour l'icône */
+    cursor: pointer;  /* Curseur en forme de main */
+    z-index: 1001;  /* S'assurer que le bouton est au-dessus de la carte */
+}
+
+/* Styliser la barre de recherche */
+#search {
+    position: absolute;  /* Positionner le champ de recherche au-dessus de la carte */
+    top: 20px;           /* Décalage depuis le haut */
+    left: 30px;          /* Décalage depuis la gauche */
+    width: 500px;        /* Largeur de la barre de recherche */
+    padding: 15px 70px 10px ;       /* Espacement intérieur du champ */
+    font-size: 16px;     /* Taille de la police du texte */
+    border: 2px solid #007BFF;  /* Bordure bleue */
+    border-radius: 20px;  /* Coins arrondis */
+    background-color: rgba(255, 255, 255, 0.8);  /* Fond blanc avec opacité */
+    color: #007BFF;      /* Couleur du texte */
+    box-sizing: border-box;  /* S'assurer que la taille inclut la bordure */
+    z-index: 1000;       /* Assurez-vous que le champ soit au-dessus de la carte */
+}
+
+/* Effet de survol de la barre de recherche */
+#search:hover {
+    background-color: rgba(255, 255, 255, 1);  /* Change le fond au survol */
+}
+
+/* Lorsque l'utilisateur clique dans la barre de recherche */
+#search:focus {
+    border-color: #0056b3;  /* Change la couleur de la bordure quand le champ est actif */
+    outline: none;           /* Supprime l'effet de contour standard */
+    background-color: #fff; /* Mettre le fond en blanc */
+}
+
+/* Style de la sidebar */
+#sidebar {
+
+    position: fixed;
+    left: -250px; /* Masque la sidebar en dehors de l'écran */
+    top: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #f4f4f4;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+    z-index: 1002;
+    transition: 0.3s; /* Animation pour la transition de la sidebar */
+}
+
+/* Style de la liste des actions dans la sidebar */
+#sidebar h2 {
+    text-align: center;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    padding: 15px 20px;
+    text-align: left;
+}
+#sidebar ul li a {
+    text-decoration: none;
+    color: #000;
+    font-size: 18px;
+}
+
+#sidebar ul li a:hover {
+    padding: 10px 50px 10px 50px;
+    border-radius: 10px;
+    background-color: #D3D3D3;
+}
+
+/* Overlay pour foncer la carte */
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Assombrit la carte */
+    display: none; /* Masqué par défaut */
+    z-index: 1000; /* Sous la sidebar mais au-dessus de la carte */
+}
+
+   /* Conteneur de recherche */
+    #searchContainer {
+        transform: translateX(-50%);
+        padding: 10px;
+        border-radius: 8px;
+        z-index: 1000;
+    	position: absolute;  /* Positionner le champ de recherche au-dessus de la carte */
+    	left: 250px;          /* Décalage depuis la gauche */
+	top: 1px;
+    	width: 500px;        /* Largeur de la barre de recherche */
+    	font-size: 16px;     /* Taille de la police du texte */
+    }
+
+    /* Liste des résultats */
+    #searchResults {
+        list-style-type: none;
+        padding: 0;
+        margin: 60px 30px 0;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        max-height: 200px;
+	max-width : 1500px;
+        overflow-y: auto;
+        background-color: white;
+        display: none;
+    }
+
+    #searchResults li {
+        padding: 8px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+    }
+
+    #searchResults li:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Dernier élément sans bordure */
+    #searchResults li:last-child {
+        border-bottom: none;
+    }
