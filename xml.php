@@ -1,7 +1,7 @@
 <?php
 function getxmlstat($ip_address) {
     // URL du fichier XML pour chaque IP
-    $xml_url = "http://{$ip_address}:25001/status.xml?a=*******:********";
+    $xml_url = "http://{$ip_address}:25001/status.xml?a=admin:Zx23-Zx81";
     $xml = @simplexml_load_file($xml_url);
 
     // Valeurs par défaut si le XML ne peut pas être chargé
