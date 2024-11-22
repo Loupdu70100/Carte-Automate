@@ -28,6 +28,7 @@ if (isset($_GET['ajax']) && isset($_GET['query'])) {
     if ($result2->num_rows > 0) {
         while ($row2 = $result2->fetch_assoc()) {
             $points[] = [
+                'id' => $row['id'],
                 'nom' => $row2['nom'],
                 'adresse_postale' => $row2['adresse_postale'],
                 'ip_address' => $row2['ip_address'],
@@ -51,6 +52,7 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         // Ajouter les informations au tableau
         $points[] = [
+            'id' => $row['id'],
             'nom' => $row['nom'],
             'adresse_postale' => $row['adresse_postale'],
             'ip_address' => $row['ip_address'],
@@ -173,6 +175,7 @@ points.forEach(function(point) {
                     <a href="http://${point.ip_address}:25000">Jet1Oeil Server</a><br>
                     <a href="http://${point.ip_address}:25001">Automate</a><br>
                     <a href="http://${point.ip_address}:80">Routeur</a><br>
+                    <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>
                 `).openPopup();
 
             })
@@ -339,6 +342,7 @@ points.forEach(function(point) {
                             <a href="http://${point.ip_address}:25000">Jet1Oeil Server</a><br>
                             <a href="http://${point.ip_address}:25001">Automate</a><br>
                             <a href="http://${point.ip_address}:80">Routeur</a><br>
+                            <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>
                         `).openPopup();
 
             })
