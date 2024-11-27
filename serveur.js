@@ -71,7 +71,7 @@ wss.on('connection', ws => {
                         res.status(500).send('Erreur d\'insertion');
                         return;
                     }
-                    console.log(`Données insérées pour id_point ${id_point}`);
+                    console.log(`mac ${id_point}`);
 
                     // Envoi de l'alerte si un seuil est franchi
                     if (alertMessage) {
@@ -143,12 +143,9 @@ wss.on('connection', ws => {
                         return;
                     }
 
-                    console.log('XML parsé:', result);
-
                     // Accéder aux éléments nécessaires du XML
                     const temperature1 = result.Monitor.Temperature1 ? result.Monitor.Temperature1[0] : null;
                     const analogInput1 = result.Monitor.AnalogInput1 ? result.Monitor.AnalogInput1[0] : null;
-                    const id = result.Monitor.ID ? result.Monitor.ID[0] : null;
 
                     // Vérification si les valeurs existent dans le XML
                     if (!temperature1 || !analogInput1 || !id) {
@@ -175,7 +172,7 @@ wss.on('connection', ws => {
     }
 
     // Appeler la fonction pour insérer les données depuis le fichier XML toutes les minutes
-    setInterval(insertDataFromXML, 60 * 1000);  // Exécute toutes les 1 minute
+    setInterval(insertDataFromXML, 60 * 5000);  // Exécute toutes les 1 minute
 });
 
 // Démarrer le serveur
