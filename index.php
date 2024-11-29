@@ -102,7 +102,7 @@ $conn->close();
         <h2>Actions</h2>
         <ul>
             <li><a href="javascript:void(0)" id="add">Ajouter</a></li>
-            <li><a href="#">Alerter</a></li>
+            <li><a href="./alert.php">Alerter</a></li>
             <li><a href="#">Modifier</a></li>
         </ul>
     </div>
