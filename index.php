@@ -1,8 +1,13 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Connexion à la base de données
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Zx23-Zx81";
 $dbname = "ubmap";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -34,6 +39,9 @@ if (isset($_GET['ajax']) && isset($_GET['query'])) {
                 'ip_address' => $row2['ip_address'],
                 'latitude' => $row2['latitude'],
                 'longitude' => $row2['longitude'],
+                'identifiant' => $row2['identifiant'],
+                'mdp'=> $row2['mdp'],
+                'last_ping_routeur'=>$row2['last_ping_routeur'],
             ];
         }
     }
@@ -58,6 +66,9 @@ if ($result->num_rows > 0) {
             'ip_address' => $row['ip_address'],
             'latitude' => $row['latitude'],
             'longitude' => $row['longitude'],
+            'identifiant' => $row['identifiant'],
+            'mdp'=> $row['mdp'],
+            'last_ping_routeur'=>$row['last_ping_routeur'],
         ];
     }
 } else {
@@ -120,6 +131,12 @@ $conn->close();
                 <label for="ip_adress">IP :</label>
                 <input type="text" id="ip_adress" name="ip_adress" required>
 
+                <label for="identifiant">Identifiant :</label>
+                <input type="text" id="identifiant" name="identifiant" required>
+
+                <label for="mdp">Motdepasse :</label>
+                <input type="text" id="mdp" name="mdp" required>
+
                 <!-- Champ d'adresse -->
                 <label for="address">Adresse :</label>
                 <input type="text" id="address" name="address" placeholder="Entrez une adresse en France" autocomplete="off" required>
@@ -163,7 +180,7 @@ points.forEach(function(point) {
 
     // Charger les données XML depuis l'API quand on clique sur le marqueur
     marker.on('click', function() {
-        fetch(`xml.php?ip_address=${point.ip_address}`)
+        fetch(`xml.php?ip_address=${point.ip_address}&identifiant=${point.identifiant}&mdp=${point.mdp}`)
             .then(response => response.json())
             .then(data => {
                 // Mettre à jour le popup avec les données récupérées
@@ -172,7 +189,8 @@ points.forEach(function(point) {
                     Adresse IP : ${point.ip_address}<br>
                     Tension Batterie : ${data.analogInput1}<br>
                     Température Batterie : ${data.temperature1}<br>
-                    <a href="http://${point.ip_address}:25000">Jet1Oeil Server</a><br>
+                    Last_ping : ${point.last_ping_routeur}<br>
+                    <a href="http://${point.ip_address}:25000/admin">Jet1Oeil Server</a><br>
                     <a href="http://${point.ip_address}:25001">Automate</a><br>
                     <a href="http://${point.ip_address}:80">Routeur</a><br>
                     <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>

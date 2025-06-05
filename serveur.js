@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql2');
 const axios = require('axios');
 const xml2js = require('xml2js');
+const now = new Date();
+const http = require('http');
 
 const app = express();
 const port = 3000;
@@ -11,7 +13,7 @@ app.use(express.json());
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', // Remplacez par votre mot de passe MySQL
+    password: 'Zx23-Zx81', // Remplacez par votre mot de passe MySQL
     database: 'ubmap' // Remplacez par le nom de votre base de données
 });
 
@@ -102,7 +104,6 @@ function dropalert() {
                 });
                 resolve('Alertes fermées traitées');
             } else {
-                console.log('Aucune alerte fermée à supprimer');
                 resolve('Aucune alerte fermée à supprimer');
             }
         });
@@ -113,7 +114,7 @@ function dropalert() {
 // Fonction pour récupérer les points
 function getPoints() {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT id, ip_address FROM points';
+        const query = 'SELECT id, ip_address,identifiant,mdp FROM points';
         db.execute(query, (err, results) => {
             if (err) {
                 console.error('Erreur lors de la récupération des points:', err);
@@ -126,12 +127,12 @@ function getPoints() {
 }
 
 // Récupérer le fichier XML d’un automate
-async function fetchXMLFromIP(ip) {
+async function fetchXMLFromIP(ip,identifiant,mdp) {
     try {
-        const response = await axios.get(`http://${ip}:25001/status.xml?a=admin:Zx23-Zx81`);
+        const response = await axios.get(`http://${ip}:25001/status.xml?a=${identifiant}:${mdp}`);
         return response.data;
     } catch (error) {
-        console.error(`Erreur de récupération du fichier XML depuis ${ip}:`, error);
+        console.error(`Erreur de récupération du fichier XML depuis ${ip}:`);
         return null;
     }
 }
@@ -141,8 +142,8 @@ async function insertDataFromXML() {
     try {
         const points = await getPoints();
         for (const point of points) {
-            const { id, ip_address } = point;
-            const xmlData = await fetchXMLFromIP(ip_address);
+            const { id, ip_address,identifiant,mdp } = point;
+            const xmlData = await fetchXMLFromIP(ip_address,identifiant,mdp);
 
             if (!xmlData) {
                 console.log(`Automate ${ip_address} inaccessible.`);
@@ -179,9 +180,9 @@ async function insertDataFromXML() {
 
 // Gérer les seuils et générer une alerte
 function handleThresholds(id_point, tens, temp) {
-    const seuil_temp_max = 10;
-    const seuil_tens_min = 30;
-    const seuil_tens_max = 35;
+    const seuil_temp_max = 60;
+    const seuil_tens_min = 22;
+    const seuil_tens_max = 29;
 
     if (temp > seuil_temp_max) {
         createAlert(`Température trop élevée (${temp}°C) pour le point ${id_point}`);
@@ -203,10 +204,48 @@ function createAlert(motif) {
     });
 }
 
+function ping(ip, port = 80, timeout = 1000) {
+    return new Promise((resolve) => {
+        const req = http.get({ host: ip, port, timeout }, (res) => {
+            res.resume(); // On ne lit pas la réponse, juste l’en-tête suffit
+            resolve(true);
+        });
+
+        req.on('error', () => resolve(false));
+        req.on('timeout', () => {
+            req.abort();
+            resolve(false);
+        });
+    });
+}
+
+async function lasping(){
+    const points = await getPoints();
+    for (const point of points) {
+        const { id, ip_address,identifiant,mdp } = point;
+        if (!ip_address) continue;
+        const result = await ping(ip_address);
+        if(result){
+            const query = 'UPDATE points SET last_ping_routeur = ? WHERE id = ?';
+            db.execute(query, [now.toISOString().slice(0, 19).replace('T', ' '),id], (err) => {
+                if (err) {
+                    console.error('Erreur d\'insertion des mesures:', err);
+                } else {
+                    console.log(`Données insérées pour id_point ${id}`);
+                }
+            });
+        }
+    }
+}
+    
+
+
 // Appeler périodiquement la fonction d’insertion
 setInterval(insertDataFromXML, 60000);
 //setInterval(dropalert,60000000)
 setInterval(dropalert,10000)
+setInterval(lasping,3600000)
+
 // === Lancer le serveur ===
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);

@@ -2,7 +2,7 @@
 // Connexion à la base de données
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "Zx23-Zx81";
 $dbname = "ubmap";
 
 $conn = new mysqli($servername, $username, $password, $dbname);

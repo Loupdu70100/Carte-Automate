@@ -1,7 +1,7 @@
 <?php
-function getxmlstat($ip_address) {
+function getxmlstat($ip_address,$identifiant,$mdp) {
     // URL du fichier XML pour chaque IP
-    $xml_url = "http://{$ip_address}:25001/status.xml?a=admin:Zx23-Zx81";
+    $xml_url = "http://{$ip_address}:25001/status.xml?a={$identifiant}:{$mdp}";
     $xml = @simplexml_load_file($xml_url);
 
     // Valeurs par défaut si le XML ne peut pas être chargé
@@ -22,9 +22,12 @@ function getxmlstat($ip_address) {
 }
 
 // Récupérer l'adresse IP à partir des paramètres de la requête
-if (isset($_GET['ip_address'])) {
+if (isset($_GET['ip_address'])&&isset($_GET['identifiant'])&&isset($_GET['mdp'])) {
     $ip_address = $_GET['ip_address'];
-    $data = getxmlstat($ip_address);
+    $identifiant=$_GET['identifiant'];
+    $mdp=$_GET['mdp'];
+
+    $data = getxmlstat($ip_address,$identifiant,$mdp);
     echo json_encode($data);
 } else {
     echo json_encode(['error' => 'Adresse IP manquante']);

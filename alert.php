@@ -177,20 +177,26 @@
     </footer>
 
     <script>
-        const apiUrl = 'http://localhost:3000/api/alerts'; // URL de l'API backend
+        const apiUrl = 'http://192.168.1.3:3000/api/alerts'; // URL de l'API backend
         const searchInput = document.getElementById('search');
         const filterStatus = document.getElementById('filter-status');
         let alerts = []; // Stocke toutes les alertes localement
 
         async function loadAlerts() {
             try {
-                const response = await fetch(apiUrl);
-                alerts = await response.json(); // Sauvegarder dans une variable globale
+                const response = await fetch('http://192.168.1.3:3000/api/alerts');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Alertes reçues :', data);
+                alerts = data;
                 renderAlerts();
             } catch (error) {
                 console.error('Erreur lors du chargement des alertes:', error);
             }
         }
+
 
         function renderAlerts() {
             const alertsDiv = document.getElementById('alerts');

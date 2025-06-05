@@ -45,7 +45,7 @@
         /* Contenu de la modal */
         .modal-content {
             background-color: white;
-            margin: 15% auto;
+            margin: 8% auto;
             padding: 20px;
             border-radius: 10px;
             width: 60%;
@@ -236,7 +236,7 @@
         z-index: 1000;
     	position: absolute;  /* Positionner le champ de recherche au-dessus de la carte */
     	left: 250px;          /* Décalage depuis la gauche */
-	top: 1px;
+	    top: 1px;
     	width: 500px;        /* Largeur de la barre de recherche */
     	font-size: 16px;     /* Taille de la police du texte */
     }
@@ -249,7 +249,7 @@
         border: 1px solid #ccc;
         border-radius: 10px;
         max-height: 200px;
-	max-width : 1500px;
+	    max-width : 1500px;
         overflow-y: auto;
         background-color: white;
         display: none;
