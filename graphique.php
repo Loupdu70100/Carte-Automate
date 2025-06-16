@@ -199,21 +199,6 @@ $conn->close();
             },
             series: [
                 {
-                    name: 'Tension (V)',
-                    type: 'line',
-                    data: tensData,
-                    smooth: true,
-                    lineStyle: {
-                        color: 'rgba(255, 99, 132, 1)'
-                    },
-                    areaStyle: {
-                        color: 'rgba(255, 99, 132, 0.2)'
-                    },
-                    itemStyle: {
-                    color: 'rgba(255, 99, 132, 1)' // Couleur des points pour la tension
-                    }
-                },
-                {
                     name: 'Température (°C)',
                     type: 'line',
                     data: tempData,
@@ -226,6 +211,21 @@ $conn->close();
                     },
                     itemStyle: {
                     color: 'rgba(54, 162, 235, 1)' // Couleur des points pour la tension
+                    }
+                },
+                {
+                    name: 'Tension (V)',
+                    type: 'line',
+                    data: tensData,
+                    smooth: true,
+                    lineStyle: {
+                        color: 'rgba(255, 99, 132, 1)'
+                    },
+                    areaStyle: {
+                        color: 'rgba(255, 99, 132, 0.2)'
+                    },
+                    itemStyle: {
+                    color: 'rgba(255, 99, 132, 1)' // Couleur des points pour la tension
                     }
                 }
             ]

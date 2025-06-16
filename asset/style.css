@@ -1,138 +1,147 @@
-        /* Assurer que html et body prennent toute la hauteur de la fenêtre */
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
+/* Assurer que html et body prennent toute la hauteur de la fenêtre */
+html, body {
+    height: 100%;
+    margin: 0;
+}
 
-        /* Faire en sorte que la carte prenne 100% de la hauteur */
-        #map {
-            height: 100%;
-        }
+/* Faire en sorte que la carte prenne 100% de la hauteur */
+#map {
+    height: 100%;
+}
 
-        /* Style pour le bouton 
-        #add {
-            position: absolute;
-            top: 20px;  
-            left: 40px;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.8); 
-            border: 2px solid #007BFF;  
-            color: #007BFF;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            z-index: 1000;
-        }
-        */
-        /* Style au survol du bouton 
-        #add:hover {
-            background-color: #007BFF;
-            color: white;
-        }
+/* Style pour le bouton 
+#add {
+    position: absolute;
+    top: 20px;  
+    left: 40px;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.8); 
+    border: 2px solid #007BFF;  
+    color: #007BFF;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 1000;
+}
 */
-        /* Le fond de la modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
+/* Style au survol du bouton 
+#add:hover {
+    background-color: #007BFF;
+    color: white;
+}
+*/
+/* Le fond de la modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
 
-        /* Contenu de la modal */
-        .modal-content {
-            background-color: white;
-            margin: 8% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 60%;
-        }
+/* Contenu de la modal */
+.modal-content {
+    background-color: white;
+    margin: 8% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%;
+}
 
-        /* Le bouton de fermeture */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+/* Le bouton de fermeture */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-        /* Style du formulaire */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+/* Style du formulaire */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
 
-        h2 {
-            text-align: center;
-        }
+h2 {
+    text-align: center;
+}
 
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
 
-       #myModal input[type="text"]{
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+#myModal input[type="text"]{
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
-        #validation {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+#myModal select{
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
-        #validation:hover {
-            background-color: #0056b3;
-        }
+#validation {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        .error-message {
-            color: red;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
+#validation:hover {
+    background-color: #0056b3;
+}
 
-        #suggestions {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 5px;
-            display: none;
-        }
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
 
-        #suggestions li {
-            padding: 8px;
-            cursor: pointer;
-        }
+#suggestions {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+    display: none;
+}
 
-        #suggestions li:hover {
-            background-color: #eee;
-        }
+#suggestions li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#suggestions li:hover {
+    background-color: #eee;
+}
 
 /* Styliser le bouton hamburger */
 #toggleSidebar {
@@ -178,7 +187,7 @@
 /* Style de la sidebar */
 #sidebar {
 
-    position: fixed;
+position: fixed;
     left: -250px; /* Masque la sidebar en dehors de l'écran */
     top: 0;
     height: 100%;
@@ -228,44 +237,53 @@
     z-index: 1000; /* Sous la sidebar mais au-dessus de la carte */
 }
 
-   /* Conteneur de recherche */
-    #searchContainer {
-        transform: translateX(-50%);
-        padding: 10px;
-        border-radius: 8px;
-        z-index: 1000;
-    	position: absolute;  /* Positionner le champ de recherche au-dessus de la carte */
-    	left: 250px;          /* Décalage depuis la gauche */
-	    top: 1px;
-    	width: 500px;        /* Largeur de la barre de recherche */
-    	font-size: 16px;     /* Taille de la police du texte */
+/* Conteneur de recherche */
+#searchContainer {
+    transform: translateX(-50%);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 1000;
+    position: absolute;  /* Positionner le champ de recherche au-dessus de la carte */
+    left: 250px;          /* Décalage depuis la gauche */
+    top: 1px;
+    width: 500px;        /* Largeur de la barre de recherche */
+    font-size: 16px;     /* Taille de la police du texte */
     }
 
-    /* Liste des résultats */
-    #searchResults {
-        list-style-type: none;
-        padding: 0;
-        margin: 60px 30px 0;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        max-height: 200px;
-	    max-width : 1500px;
-        overflow-y: auto;
-        background-color: white;
-        display: none;
-    }
+/* Liste des résultats */
+#searchResults {
+    list-style-type: none;
+    padding: 0;
+    margin: 60px 30px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-height: 200px;
+    max-width : 1500px;
+    overflow-y: auto;
+    background-color: white;
+    display: none;
+}
 
-    #searchResults li {
-        padding: 8px;
-        cursor: pointer;
-        border-bottom: 1px solid #eee;
-    }
+#searchResults li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
 
-    #searchResults li:hover {
-        background-color: #f0f0f0;
-    }
+#searchResults li:hover {
+    background-color: #f0f0f0;
+}
 
-    /* Dernier élément sans bordure */
-    #searchResults li:last-child {
-        border-bottom: none;
-    }
+/* Dernier élément sans bordure */
+#searchResults li:last-child {
+    border-bottom: none;
+}
+
+.hint {
+    display: block;
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 2px;
+    margin-bottom: 6px;
+}
+

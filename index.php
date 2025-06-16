@@ -33,10 +33,12 @@ if (isset($_GET['ajax']) && isset($_GET['query'])) {
     if ($result2->num_rows > 0) {
         while ($row2 = $result2->fetch_assoc()) {
             $points[] = [
-                'id' => $row['id'],
+                'id' => $row2['id'],
                 'nom' => $row2['nom'],
+                'model' => $row2['model'],
                 'adresse_postale' => $row2['adresse_postale'],
                 'ip_address' => $row2['ip_address'],
+                'port' => $row2['port'],
                 'latitude' => $row2['latitude'],
                 'longitude' => $row2['longitude'],
                 'identifiant' => $row2['identifiant'],
@@ -62,8 +64,10 @@ if ($result->num_rows > 0) {
         $points[] = [
             'id' => $row['id'],
             'nom' => $row['nom'],
+            'model' => $row['model'],
             'adresse_postale' => $row['adresse_postale'],
             'ip_address' => $row['ip_address'],
+            'port' => $row['port'],
             'latitude' => $row['latitude'],
             'longitude' => $row['longitude'],
             'identifiant' => $row['identifiant'],
@@ -92,6 +96,10 @@ $conn->close();
     <title>Carte Interactive</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet MarkerCluster CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="./asset/style.css">
 </head>
 <body>
@@ -127,9 +135,19 @@ $conn->close();
             <form id="contactForm" method="post" action="insertion.php">
                 <label for="nom">Nom :</label>
                 <input type="text" id="nom" name="nom" required>
+                
+                <label for="model">Model :</label>
+                <select id="model" name="model" default="ubbat">
+                    <option value="ubbat">UrbanBox Batterie</option>
+                    <option value="ub230">UrbanBox 230V</option>
+                </select>
 
                 <label for="ip_adress">IP :</label>
                 <input type="text" id="ip_adress" name="ip_adress" required>
+
+                <label for="port">Port :</label>
+                <small class="hint">Laissez vide si 25001</small>
+                <input type="text" id="port" name="port">
 
                 <label for="identifiant">Identifiant :</label>
                 <input type="text" id="identifiant" name="identifiant" required>
@@ -164,44 +182,63 @@ $conn->close();
     
     // Création de la carte
     var map = L.map('map', { zoomControl: false }).setView([47.096279, 6.495750], 5);
-
-        // Couche de tuiles OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-// Récupération des points de la base de données en PHP
-const points = <?php echo json_encode($points); ?>;
-const markersMap = {};
-// Ajouter les marqueurs sur la carte
-points.forEach(function(point) {
-    const marker = L.marker([point.latitude, point.longitude]).addTo(map);
-    markersMap[point.ip_address] = marker;
-
-    // Charger les données XML depuis l'API quand on clique sur le marqueur
-    marker.on('click', function() {
-        fetch(`xml.php?ip_address=${point.ip_address}&identifiant=${point.identifiant}&mdp=${point.mdp}`)
-            .then(response => response.json())
-            .then(data => {
-                // Mettre à jour le popup avec les données récupérées
-                marker.bindPopup(`
-                    <b>${point.nom}</b><br>
-                    Adresse IP : ${point.ip_address}<br>
-                    Tension Batterie : ${data.analogInput1}<br>
-                    Température Batterie : ${data.temperature1}<br>
-                    Last_ping : ${point.last_ping_routeur}<br>
-                    <a href="http://${point.ip_address}:25000/admin">Jet1Oeil Server</a><br>
-                    <a href="http://${point.ip_address}:25001">Automate</a><br>
-                    <a href="http://${point.ip_address}:80">Routeur</a><br>
-                    <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>
-                `).openPopup();
-
-            })
-            .catch(error => {
-                console.error('Erreur de chargement des données XML:', error);
-            });
+    var ubbat = L.icon({
+    iconUrl: './asset/ubbat.png',
+    iconSize: [30, 40],
     });
+    var ub230 = L.icon({
+    iconUrl: './asset/ub230.png',
+    iconSize: [30, 40],
+    });
+
+    // Couche de tuiles OpenStreetMap
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Récupération des points de la base de données en PHP
+    // Récupération des points de la base de données en PHP
+    const points = <?php echo json_encode($points); ?>;
+    const markersMap = {};
+
+    // Création du groupe de clusters
+    const markerClusterGroup = L.markerClusterGroup({
+	showCoverageOnHover: false,
 });
+    map.addLayer(markerClusterGroup);
+
+    points.forEach(function(point) {
+        const icons = {
+            ubbat: ubbat,
+            ub230: ub230
+        };
+        const marker = L.marker([point.latitude, point.longitude], { icon: icons[point.model] });
+
+        marker.on('click', function() {
+            fetch(`xml.php?ip_address=${point.ip_address}&port=${point.port}&identifiant=${point.identifiant}&mdp=${point.mdp}`)
+                .then(response => response.json())
+                .then(data => {
+                    marker.bindPopup(`
+                        <b>${point.nom}</b><br>
+                        Adresse IP : ${point.ip_address}<br>
+                        Tension Batterie : ${data.analogInput1}<br>
+                        Température Batterie : ${data.temperature1}<br>
+                        Last_ping : ${point.last_ping_routeur}<br>
+                        <a href="http://${point.ip_address}:25000/admin">Jet1Oeil Server</a><br>
+                        <a href="http://${point.ip_address}:${point.port}">Automate</a><br>
+                        <a href="http://${point.ip_address}:80">Routeur</a><br>
+                        <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>
+                    `).openPopup();
+                })
+                .catch(error => {
+                    console.error('Erreur de chargement des données XML:', error);
+                });
+        });
+
+        markersMap[point.ip_address] = marker;
+        markerClusterGroup.addLayer(marker); // Ajout dans le cluster
+    });
+
 
 
         // Variables pour stocker latitude et longitude
@@ -358,7 +395,7 @@ points.forEach(function(point) {
                             Tension Batterie : ${data.analogInput1}<br>
                             Température Batterie : ${data.temperature1}<br>
                             <a href="http://${point.ip_address}:25000">Jet1Oeil Server</a><br>
-                            <a href="http://${point.ip_address}:25001">Automate</a><br>
+                            <a href="http://${point.ip_address}:${point.port}">Automate</a><br>
                             <a href="http://${point.ip_address}:80">Routeur</a><br>
                             <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>
                         `).openPopup();
