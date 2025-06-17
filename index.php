@@ -122,7 +122,7 @@ $conn->close();
         <ul>
             <li><a href="javascript:void(0)" id="add">Ajouter</a></li>
             <li><a href="./alert.php">Alerter</a></li>
-            <li><a href="#">Modifier</a></li>
+            <li><a href="./edit.php">Modifier</a></li>
         </ul>
     </div>
 
@@ -178,23 +178,121 @@ $conn->close();
     </div>
 
     <div id="overlay"></div>
+    <div id="mini-map" title="Clique pour changer le thème"></div>
 <script>
     
     // Création de la carte
     var map = L.map('map', { zoomControl: false }).setView([47.096279, 6.495750], 5);
+    var ubbat0 = L.icon({
+    iconUrl: './asset/test.png',
+    iconSize: [45, 45],
+    });
+    var ubbat25 = L.icon({
+    iconUrl: './asset/25.png',
+    iconSize: [45, 45],
+    });
+    var ubbat50 = L.icon({
+    iconUrl: './asset/50.png',
+    iconSize: [45, 45],
+    });
+    var ubbat75 = L.icon({
+    iconUrl: './asset/752.png',
+    iconSize: [75, 75],
+    });
+    var ubbat100 = L.icon({
+    iconUrl: './asset/100.png',
+    iconSize: [45, 45],
+    });
     var ubbat = L.icon({
     iconUrl: './asset/ubbat.png',
-    iconSize: [30, 40],
+    iconSize: [45, 45],
     });
     var ub230 = L.icon({
     iconUrl: './asset/ub230.png',
     iconSize: [30, 40],
     });
+    var ubfeu = L.icon({
+    iconUrl: './asset/ubfeu.png',
+    iconSize: [75, 45],
+    });
 
-    // Couche de tuiles OpenStreetMap
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+// Couches principales
+  const osmLayerMain = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  });
+
+  const satelliteLayerMain = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg', {
+    maxZoom: 19,
+    attribution: '&copy; Stadia Maps'
+  });
+
+  osmLayerMain.addTo(map);
+  let mainIsOSM = true;
+
+  // Mini carte
+  const miniMap = L.map('mini-map', {
+    zoomControl: false,
+    attributionControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
+    inertia: false,
+  }).setView(map.getCenter(), map.getZoom());
+
+  // Couches mini
+  const osmLayerMini = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
+  const satelliteLayerMini = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg', { maxZoom: 19 });
+
+  // Par défaut la mini-carte montre le fond OPPOSÉ
+  satelliteLayerMini.addTo(miniMap);
+  let miniShowingSat = true;
+
+  // Synchronisation mini-carte avec la principale (centre et zoom)
+function syncMiniMap() {
+  const center = map.getCenter();
+  const zoom = map.getZoom();
+  // On baisse le zoom de la mini carte pour voir plus large
+  const miniZoom = Math.max(zoom - 3, 0);
+  miniMap.setView(center, miniZoom);
+}
+
+
+  map.on('move', syncMiniMap);
+  map.on('zoom', syncMiniMap);
+
+  // Quand on clique sur la mini-carte : on inverse les couches
+  miniMap.getContainer().addEventListener('click', () => {
+    if (mainIsOSM) {
+      // Carte principale en satellite
+      map.removeLayer(osmLayerMain);
+      satelliteLayerMain.addTo(map);
+      mainIsOSM = false;
+
+      // Mini en plan
+      if (miniShowingSat) miniMap.removeLayer(satelliteLayerMini);
+      osmLayerMini.addTo(miniMap);
+      miniShowingSat = false;
+
+    } else {
+      // Carte principale en plan
+      map.removeLayer(satelliteLayerMain);
+      osmLayerMain.addTo(map);
+      mainIsOSM = true;
+
+      // Mini en satellite
+      if (!miniShowingSat) miniMap.removeLayer(osmLayerMini);
+      satelliteLayerMini.addTo(miniMap);
+      miniShowingSat = true;
+    }
+  });
+
+
+
+
+
 
     // Récupération des points de la base de données en PHP
     // Récupération des points de la base de données en PHP
@@ -204,19 +302,34 @@ $conn->close();
     // Création du groupe de clusters
     const markerClusterGroup = L.markerClusterGroup({
 	showCoverageOnHover: false,
-});
+    });
+    
     map.addLayer(markerClusterGroup);
 
     points.forEach(function(point) {
         const icons = {
+            ubbat100: ubbat100,
+            ubbat75: ubbat75,
+            ubbat50: ubbat50,
+            ubbat25: ubbat25,
+            ubbat0: ubbat0,
             ubbat: ubbat,
-            ub230: ub230
+            ub230: ub230,
+            ubfeu: ubfeu
         };
         const marker = L.marker([point.latitude, point.longitude], { icon: icons[point.model] });
 
-        marker.on('click', function() {
-            fetch(`xml.php?ip_address=${point.ip_address}&port=${point.port}&identifiant=${point.identifiant}&mdp=${point.mdp}`)
-                .then(response => response.json())
+        marker.on('click', function () {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // timeout après 5 secondes
+
+            fetch(`xml.php?ip_address=${point.ip_address}&port=${point.port}&identifiant=${point.identifiant}&mdp=${point.mdp}`, {
+                signal: controller.signal
+            })
+                .then(response => {
+                    clearTimeout(timeoutId);
+                    return response.json();
+                })
                 .then(data => {
                     marker.bindPopup(`
                         <b>${point.nom}</b><br>
@@ -231,9 +344,22 @@ $conn->close();
                     `).openPopup();
                 })
                 .catch(error => {
-                    console.error('Erreur de chargement des données XML:', error);
+                    clearTimeout(timeoutId);
+                    if (error.name === 'AbortError') {
+                        console.error('Requête interrompue : délai dépassé');
+                        marker.bindPopup(`<b>${point.nom}</b><br>
+                        ⏱️ Délai dépassé en tentant de contacter le point.<br>
+                        Last_ping : ${point.last_ping_routeur}<br>
+                        <a href="http://${point.ip_address}:25000/admin">Jet1Oeil Server</a><br>
+                        <a href="http://${point.ip_address}:${point.port}">Automate</a><br>
+                        <a href="http://${point.ip_address}:80">Routeur</a><br>
+                        <a href="./graphique.php?id_point=${point.id}">Graphique</a><br>`).openPopup();
+                    } else {
+                        console.error('Erreur de chargement des données XML:', error);
+                    }
                 });
         });
+
 
         markersMap[point.ip_address] = marker;
         markerClusterGroup.addLayer(marker); // Ajout dans le cluster

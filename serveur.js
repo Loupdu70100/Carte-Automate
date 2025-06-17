@@ -76,6 +76,31 @@ function createAlert(motif) {
     });
 }
 
+function changeicon(tens, id) {
+    let query = "";
+
+    if (tens >= 29) {
+        query = `UPDATE points SET model='ubbat100' WHERE id = ?`;
+    } else if (tens > 27.6 && tens < 29) {
+        query = `UPDATE points SET model='ubbat75' WHERE id = ?`;
+    } else if (tens > 24.8 && tens <= 27.6) {
+        query = `UPDATE points SET model='ubbat50' WHERE id = ?`;
+    } else if (tens > 22 && tens <= 24.8) {
+        query = `UPDATE points SET model='ubbat25' WHERE id = ?`;
+    } else if (tens <= 22) {
+        query = `UPDATE points SET model='ubbat0' WHERE id = ?`;
+    }
+
+    if (query !== "") {
+        db.execute(query, [id], (err) => {
+            if (err)
+                console.error('Erreur lors du changement icon:', err);
+            else 
+                console.log('Icon changé');
+        });
+    }
+}
+
 function ping(ip, port = 80, timeout = 1000, callback) {
     const req = http.get({ host: ip, port, timeout }, res => {
         res.resume();
@@ -109,6 +134,7 @@ function processPoints() {
                 fetchXML(ip_address, port, identifiant, mdp, (err, xmlData) => {
                     if (err || !xmlData) {
                         console.log(`Automate ${ip_address} inaccessible.`);
+                        changeicon(0,id);
                         return;
                     }
 
@@ -125,7 +151,8 @@ function processPoints() {
                             if (err) return console.error(`Erreur insertion mesure ${id}:`, err);
                                 console.log(`Données insérées pour id_point ${id}`);
                                 console.log(`Insertion : [${id}, ${tens}, ${temp}, ${datetime}]`);
-                                handleThresholds(id, tens, temp);
+                                handleThresholds(id, tens, temp); //creation d'alert
+                                changeicon(tens,id);
                             });
                         } catch (err) {
                             console.error(`Erreur traitement point ${id}:`, err);
@@ -140,6 +167,7 @@ function processPoints() {
 }
 
 setInterval(processPoints, 3600000);
+
 app.listen(port, () => {
     console.log(`Serveur démarré sur http://localhost:${port}`);
 });
