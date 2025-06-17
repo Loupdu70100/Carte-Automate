@@ -184,24 +184,24 @@ $conn->close();
     // Création de la carte
     var map = L.map('map', { zoomControl: false }).setView([47.096279, 6.495750], 5);
     var ubbat0 = L.icon({
-    iconUrl: './asset/test.png',
-    iconSize: [45, 45],
+    iconUrl: './asset/0.png',
+    iconSize: [65, 65],
     });
     var ubbat25 = L.icon({
     iconUrl: './asset/25.png',
-    iconSize: [45, 45],
+    iconSize: [65, 65],
     });
     var ubbat50 = L.icon({
     iconUrl: './asset/50.png',
-    iconSize: [45, 45],
+    iconSize: [65, 65],
     });
     var ubbat75 = L.icon({
-    iconUrl: './asset/752.png',
-    iconSize: [75, 75],
+    iconUrl: './asset/75.png',
+    iconSize: [65, 65],
     });
     var ubbat100 = L.icon({
     iconUrl: './asset/100.png',
-    iconSize: [45, 45],
+    iconSize: [65, 65],
     });
     var ubbat = L.icon({
     iconUrl: './asset/ubbat.png',
@@ -227,7 +227,7 @@ $conn->close();
     attribution: '&copy; Stadia Maps'
   });
 
-  osmLayerMain.addTo(map);
+  satelliteLayerMain.addTo(map);
   let mainIsOSM = true;
 
   // Mini carte
@@ -247,7 +247,7 @@ $conn->close();
   const satelliteLayerMini = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg', { maxZoom: 19 });
 
   // Par défaut la mini-carte montre le fond OPPOSÉ
-  satelliteLayerMini.addTo(miniMap);
+  osmLayerMini.addTo(miniMap);
   let miniShowingSat = true;
 
   // Synchronisation mini-carte avec la principale (centre et zoom)
